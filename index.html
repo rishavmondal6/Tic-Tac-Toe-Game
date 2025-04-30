@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tic-Tac-Toe Game</title>
+    <style>
+        *{
+        color: wheat
+        ;
+        font-family: sans-serif;
+        transition: 0,2s ease-in-out;
+        user-select: none; 
+        box-sizing: border-box;
+         }
+        body {
+        background-image: url(Tic\ 1..avif);
+        margin: 0;
+        padding: 0;
+        width: 100vw;
+        text-align: center;
+        padding-top: -2vh;
+         }
+         .turn-container{
+            width: 170px;
+            height: 90px;
+            margin: auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            grid-template-rows: 1fr 1fr;
+            position: relative;
+           
+         }
+         .turn-container h3{
+         border: 5px solid aqua;
+         background-color: #ff2e63;
+         font-size: 1.6rem;
+         font-weight: 700;
+         color: wheat;
+         border-radius: 10px;
+         margin-bottom: 15px;
+         grid-column-start: 1;
+         grid-column-end: 3;
+         }
+         .turn-container .turn-box{
+         border: 5px solid aqua;
+         font-size: 2rem;
+         font-weight: 700;
+         color: wheat;
+         border-radius: 10px;
+         }
+        .turn-container .turn-box:nth-child(even){
+             border-right: none;
+         }
+         .bg{
+            bottom: 0;
+            left: 0;
+            width: 84px;
+            height: 45px;
+            background-color: #ff2e63;
+            z-index: -1;
+            border-radius: 10px;
+            margin-top:-46px;
+         }
+        
+        .main-grid {
+            margin-top: 90px;
+            margin-left: 522px;
+            display: grid;
+            grid-template-columns: repeat(3, 100px);
+            grid-template-rows: repeat(3, 100px);
+            gap: 5px;
+            
+        }
+        .box {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 2rem;
+            font-weight: bold;
+            width: 100px;
+            height: 100px;
+            background-color: #333;
+            border: 2px solid aquamarine;
+            cursor: pointer;
+            transition: transform 0.2s, background-color 0.3s;
+        }
+        .box:hover {
+            background-color: #ff2e63;
+            transform: scale(1.1);
+        }
+        .win {
+         background-color: rgb(255, 4, 192) !important;
+         animation: winAnimation 0.5s infinite alternate;
+         }
+
+         @keyframes winAnimation {
+         from {
+         transform: scale(1);
+         }
+         to {
+         transform: scale(1.1);
+          } 
+         }   
+
+
+#play-again{
+    background-color: #ff2e63;
+    padding: 9px 20px;
+    border: none;
+    font-size: 1.8rem;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: 600;
+    display: none;
+    color: wheat;
+}
+
+#play-again:hover{
+      padding: 10px 30px;
+      background-color: blue;
+      color: white;
+      
+}
+
+@media (max-width: 600px) {
+            .turn-container {
+                width: 150px;
+                height: 80px;
+            }
+            .turn-container h3 {
+                font-size: 1.4rem;
+                margin-bottom: 10px;
+                margin-left: -10px;
+                
+            }
+            .turn-container .turn-box {
+                font-size: 1.5rem;
+                width: 80px;
+                margin-left: -10px;
+            }
+            .bg{
+                margin-top: -37px;
+                margin-left: -10px;
+                height: 33px;
+                width: 80px;
+            }
+            .main-grid {
+                margin-top: 90px;
+                grid-template-columns: repeat(3, 90px);
+                grid-template-rows: repeat(3, 90px);
+                margin-left: 46px;
+            }
+            .box {
+                font-size: 1.6rem;
+                width: 90px;
+                height: 90px;
+            }
+            #play-again {
+                font-size: 1.6rem;
+                padding: 8px 18px;
+                margin-left: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="turn-container">
+        <h3>Turn For</h3>
+        <div class="turn-box" id="turn-x">X</div>
+        <div class="turn-box" id="turn-o">O</div>
+        <div class="bg" id="turn-bg"></div>
+    </div>
+    <div class="main-grid" id="grid">
+        <div class="box"></div>
+        <div class="box"></div>
+        <div class="box"></div>
+        <div class="box"></div>
+        <div class="box"></div>
+        <div class="box"></div>
+        <div class="box"></div>
+        <div class="box"></div>
+        <div class="box"></div>
+    </div>
+    <h2 id="results"></h2>
+    <button id="play-again">Play Again</button>
+    <script>
+        let boxes = document.querySelectorAll(".box");
+        let turn = "X";
+        let isGameOver = false;
+        let turnBg = document.getElementById("turn-bg");
+
+        function updateTurn() {
+            turnBg.style.transform = turn === "X" ? "translateX(0)" : "translateX(100%)";
+        }
+
+        function checkDraw() {
+            if ([...boxes].every(box => box.innerHTML !== "") && !isGameOver) {
+                document.getElementById("results").innerHTML = "It's a draw";
+                document.getElementById("play-again").style.display = "inline";
+                isGameOver = true;
+            }
+        }
+
+        boxes.forEach(box => {
+            box.addEventListener("click", () => {
+                if (!isGameOver && box.innerHTML === "") {
+                    box.innerHTML = turn;
+                    checkWin();
+                    checkDraw();
+                    if (!isGameOver) {
+                        turn = turn === "X" ? "O" : "X";
+                        updateTurn();
+                    }
+                }
+            });
+        });
+
+    function checkWin() {
+    let winConditions = [
+        [0, 1, 2], [3, 4, 5], [6, 7, 8],
+        [0, 3, 6], [1, 4, 7], [2, 5, 8],
+        [0, 4, 8], [2, 4, 6]
+    ];
+    winConditions.forEach(condition => {
+        let [a, b, c] = condition;
+        if (boxes[a].innerHTML && boxes[a].innerHTML === boxes[b].innerHTML && boxes[a].innerHTML === boxes[c].innerHTML) {
+            isGameOver = true;
+            document.getElementById("results").innerHTML = boxes[a].innerHTML + " Wins";
+            document.getElementById("play-again").style.display = "inline";
+            // Add the .win class to the winning boxes to trigger the animation
+            boxes[a].classList.add("win");
+            boxes[b].classList.add("win");
+            boxes[c].classList.add("win");
+        }
+    });
+}
+    document.getElementById("play-again").addEventListener("click", () => {
+    boxes.forEach(box => {
+        box.innerHTML = ""; 
+        box.classList.remove("win"); // Remove the 'win' class to reset animation
+    });
+    turn = "X";
+    updateTurn();
+    document.getElementById("results").innerHTML = "";
+    document.getElementById("play-again").style.display = "none";
+    isGameOver = false;
+});
+
+    </script>
+</body>
+</html>
